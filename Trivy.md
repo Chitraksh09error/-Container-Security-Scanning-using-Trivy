@@ -63,15 +63,28 @@ COPY . .
 CMD ["node", "app.js"]
 ```
 
+## Build Docker image
+```bash
 docker build -t trivy-demo .
+```
 
+## Scan image using trivy
+```bash
 trivy image trivy-demo
-
+```
+## Generate a json report
+```bash
 trivy image -f json -o report.json trivy-demo
+```
+# Dockerfile fixation to see improvements
 
+## Create a Dockerfile in the same folder with security
+```bash
 nano Dockerfile.secure
-
-FROM node:18-alpine
+```
+## (Corrected) code -
+```bash
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -84,8 +97,13 @@ COPY . .
 USER node
 
 CMD ["node", "app.js"]
-
+```
+## Build and scan the image
+```bash
 docker build -t trivy-demo-secure -f Dockerfile.secure .
-
+```
+```bash
 trivy image trivy-demo-secure
+```
 
+# If you find this repository helpful, please give it a star ⭐ and share it with others to support the project. 🙌
