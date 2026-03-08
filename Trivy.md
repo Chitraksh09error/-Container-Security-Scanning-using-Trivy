@@ -18,7 +18,7 @@ newgrp docker
 docker run hello-world
 ```
 
-# Install Trivy
+# Install Trivy and set up Dockerfile, app.js, and package.json
 ## Installation
 ```bash
 sudo apt update
@@ -37,11 +37,17 @@ sudo apt install trivy -y
 ```bash
 trivy --version
 ```
+## Create folder
+```bash
 mkdir trivy-demo
 cd trivy-demo
-
+```
+### create a Dockerfile
+```bash
 nano Dockerfile
-
+```
+### code (sample Dockerfile which contains issues within container images) - 
+```bash
 FROM node:14
 
 WORKDIR /app
@@ -55,6 +61,7 @@ RUN npm install
 COPY . .
 
 CMD ["node", "app.js"]
+```
 
 docker build -t trivy-demo .
 
