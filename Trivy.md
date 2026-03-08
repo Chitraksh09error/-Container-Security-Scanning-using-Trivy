@@ -17,3 +17,68 @@ newgrp docker
 ```bash
 docker run hello-world
 ```
+
+# Install Trivy
+## Installation
+```bash
+sudo apt update
+sudo apt install wget apt-transport-https gnupg lsb-release -y
+```
+```bash
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+```
+```bash
+echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+```
+```bash
+sudo apt update
+sudo apt install trivy -y
+```
+```bash
+trivy --version
+```
+mkdir trivy-demo
+cd trivy-demo
+
+nano Dockerfile
+
+FROM node:14
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN apt-get update && apt-get install -y curl
+
+RUN npm install
+
+COPY . .
+
+CMD ["node", "app.js"]
+
+docker build -t trivy-demo .
+
+trivy image trivy-demo
+
+trivy image -f json -o report.json trivy-demo
+
+nano Dockerfile.secure
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --production
+
+COPY . .
+
+USER node
+
+CMD ["node", "app.js"]
+
+docker build -t trivy-demo-secure -f Dockerfile.secure .
+
+trivy image trivy-demo-secure
+
